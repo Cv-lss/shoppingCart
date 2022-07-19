@@ -1,28 +1,37 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <Header :title="'我的购物车'" background="pink" color="green"></Header>
+    <Goods v-for="item in list" :key="item.id" :list="item"></Goods>
+    <Footer :arr="list" @changeAll="allFn"></Footer>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Header from '@/components/MyHeader.vue'
+import Goods from '@/components/MyGoods.vue'
+import Footer from '@/components/MyFooter.vue'
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+  components: { Header, Goods, Footer },
+  data() {
+    return {
+      list: [],
+    }
+  },
+
+  created() {
+    this.$axios({
+      url: 'api/cart'
+    }).then(res => {
+      this.list = res.data.list
+    })
+  },
+  methods: {
+    allFn(val) {
+      this.list.forEach(ele => ele.goods_state = val)
+    }
+  },
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
